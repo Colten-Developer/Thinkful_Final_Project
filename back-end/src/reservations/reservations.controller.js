@@ -91,6 +91,39 @@ function validateProperties(req, res, next) {
       message: `people`
     })
   }
+
+  //checks if time is available 
+  let hours = Number(timeArray[0])
+  let minutes = Number(timeArray[1])
+  if(hours <= 10){
+    if(hours == 10 && minutes < 30){
+      return next({
+        status: 400,
+        message: `too early`
+      })
+    }
+    if(hours < 10){
+      return next({
+        status: 400,
+        message: `too early`
+      })
+    }
+  }
+
+  if(hours >= 21){
+    if(hours == 21 && minutes > 30){
+      return next({
+        status: 400,
+        message: `too late`
+      })
+    }
+    if(hours > 21) {
+      return next({
+        status: 400,
+        message: `too late`
+      })
+    }
+  }
   //if every type is valid continue down the list
   next()
 }
