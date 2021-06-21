@@ -128,9 +128,29 @@ function validateProperties(req, res, next) {
   next()
 }
 
+async function reservationExists(req, res, next) {
+  const { reservationId } = req.params
+
+  const reservation = await service.read(reservationId)
+
+  if (reservation){
+      res.locals.reservation = reservation
+      return next()
+  }
+  next({ status: 404, message: `Table cannot be found.`})
+}
+
+async function read(req, res) {
+  const { reservation: data } = res.locals
+  res.json({ data })
+}
+
 async function list(req, res, next) {
+  if(req.query.date){
+    const data = await service.listDate(req.query.data)
+    res.json({ data })
+  }
   const data = await service.list();
-  console.log(data)
   res.json({ data });
 }
 
@@ -142,6 +162,7 @@ function create(req, res, next) {
 }
 
 module.exports = {
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   list: [asyncErrorBoundary(list)],
   create: [hasOnlyValidProperties, hasRequiredProperties, validateProperties, asyncErrorBoundary(create)],
 };
