@@ -1,9 +1,12 @@
 
 exports.up = function(knex) {
-  return knex.schema.createTable("tables", (table) => {
+  return knex.schema
+  .dropTableIfExists('tables')
+  .createTable("tables", (table) => {
       table.increments("table_id").primary;
       table.string("table_name");
       table.integer("capacity");
+      table.integer('reservation_id').unsigned().unique()
       table
         .foreign("reservation_id")
         .references("reservation_id")
@@ -14,5 +17,17 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable("tables")
+  return knex.schema.dropTableIfExists("tables")
 };
+
+/*
+
+table
+        .foreign("reservation_id")
+        .references("reservation_id")
+        .inTable("reservations")
+        .onDelete("CASCADE");
+
+reservations
+reservation_id
+*/

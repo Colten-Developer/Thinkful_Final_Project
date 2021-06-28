@@ -1,10 +1,11 @@
 const service = require('./tables.service')
 const asyncErrorBoundary = require('../errors/asyncErrorBoundary')
 const hasProperties = require('../errors/hasProperties')
+const { table } = require('../db/connection')
 
-const hasRequiredProperties = hasProperties()
+const hasRequiredProperties = hasProperties('table_name', 'capacity')
 
-const VALID_PROPERTIES = []
+const VALID_PROPERTIES = ['table_name', 'capacity', 'reservation_id', 'table_id', 'people']
 
 function hasOnlyValidProperties(req, res, next) {
     const { data = {} } = req.body;
@@ -22,19 +23,10 @@ function hasOnlyValidProperties(req, res, next) {
     next();
   }
 
-//get tables/:tableId
-//post tables
-//get tables
-//get reservations/:reservationId
-//put /tables/:tableId/seat
-
 function validateProperties(req, res, next) {
-    let data = req.body.data
-    if(!data) {
-        return next({ status: 400, message: 'data'})
-    }
+    let tableName = req.body.data.table_name
+    let capacity = req.body.data.capacity
 
-    let tableName = data.table_name
     if(!tableName){
         return next({ status: 400, message: 'table_name is missing'})
     }
@@ -43,7 +35,6 @@ function validateProperties(req, res, next) {
         return next({ status: 400, message: 'table_name is too short'})
     }
 
-    let capacity = data.capacity
     if(isNaN(capacity)){
         return next({ status: 400, message: 'capacity must be a number'})
     }
@@ -51,19 +42,46 @@ function validateProperties(req, res, next) {
     if(capacity < 1){
         return next({ status: 400, message: 'capacity must be greater than 0'})
     }
+    return next()
+}
+
+async function validatePropertiesUpdate(req, res, next) {
+
+    if(!req.body.data){
+        return next({ status: 400, message: `data is missing`})
+    }
+    if(!req.body.data.reservation_id){
+        return next({ status: 400, message: `reservation_id is missing`})
+    }
+
+    const reservation = await service.readReservation(req.body.data.reservation_id)
+    if(!reservation) {
+        return next({ status: 404, message: `reservation ${req.body.data.reservation_id} does not exist`})
+    }
+
+    if(reservation.people > res.locals.table.capacity) {
+        return next({ status: 400, message: `table does not have the capacity`})
+    }
+
+    if(res.locals.table.reservation_id != null) {
+        return next({ status: 400, message: `occupied`})
+
+    }
+
+    return next()
 }
 
 async function tableExists(req, res, next) {
     const { tableId } = req.params
-
+  
     const table = await service.read(tableId)
-
+  
     if (table){
         res.locals.table = table
         return next()
     }
-    next({ status: 404, message: `Table cannot be found.`})
-}
+    next({ status: 404, message: `Table id ${tableId} does not exist`})
+  }
 
 async function read(req, res, next) {
     const { table: data } = res.locals
@@ -91,13 +109,12 @@ async function update(req, res, next) {
     }
 
     const data = await service.update(updatedTable)
-
-    res.json({ data })
+    res.status(200).json({ data })
 }
 
 module.exports = {
     read: [asyncErrorBoundary(tableExists), asyncErrorBoundary(read)],
     list: asyncErrorBoundary(list),
     create: [hasOnlyValidProperties, hasRequiredProperties, validateProperties, asyncErrorBoundary(create)],
-    update: [hasOnlyValidProperties, validateProperties, hasRequiredProperties, asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
+    update: [asyncErrorBoundary(tableExists), validatePropertiesUpdate, asyncErrorBoundary(update)],
 }

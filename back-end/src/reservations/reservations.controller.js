@@ -129,29 +129,27 @@ function validateProperties(req, res, next) {
 }
 
 async function reservationExists(req, res, next) {
-  const { reservationId } = req.params
+  const { reservation_id } = req.params
 
-  const reservation = await service.read(reservationId)
-
+  const reservation = await service.read(reservation_id)
+  
   if (reservation){
       res.locals.reservation = reservation
       return next()
   }
-  next({ status: 404, message: `Table cannot be found.`})
+  next({ status: 404, message: `reservation id ${reservation_id} cannot be found.`})
 }
 
 async function read(req, res) {
   const { reservation: data } = res.locals
-  res.json({ data })
+  res.status(200).json({ data })
 }
 
 async function list(req, res, next) {
   if(req.query.date){
-    const data = await service.listDate(req.query.data)
+    const data = await service.listDate(req.query.date)
     res.json({ data })
   }
-  const data = await service.list();
-  res.json({ data });
 }
 
 function create(req, res, next) {
