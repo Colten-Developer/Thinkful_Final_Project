@@ -31,7 +31,8 @@ function update(updatedTable) {
         .update(updatedTable, '*')
   }
 
-function destroy(tableId) {
+//might need to del(reservation_id) to delete the reservation instead of the entire table.
+function destroyAvailability(tableId) {
     return knex('tables')
         .where({ table_id: tableId })
         .del()
@@ -43,5 +44,5 @@ module.exports = {
     create,
     update,
     readReservation,
-    destroy,
+    destroyAvailability,
 }

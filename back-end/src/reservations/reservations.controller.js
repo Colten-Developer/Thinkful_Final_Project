@@ -42,6 +42,13 @@ function validateProperties(req, res, next) {
   } 
 
   let time = req.body.data.reservation_time
+  if(!time) {
+    return next({
+      status: 400,
+      message: `reservation_time`
+    })
+  }
+
   let timeArray = time.split(':')
   let people = req.body.data.people
 
@@ -85,7 +92,7 @@ function validateProperties(req, res, next) {
   }
 
   //checks if people is a number
-  if(typeof people != 'number'){
+  if(typeof people != 'number' || people === 0){
     return next({
       status: 400,
       message: `people`
@@ -128,6 +135,46 @@ function validateProperties(req, res, next) {
   next()
 }
 
+function validateUpdatedProperties(req, res, next) {
+  let firstName = req.body.data.first_name
+  let lastName = req.body.data.last_name
+  let mobileNumber = req.body.data.mobile_number
+  let reservationTime = req.body.data.reservation_time
+
+ //console.log(res.locals.reservation.first_name, 'long first')
+  //console.log(firstName, 'first name')
+
+  if(!firstName){
+    return next({
+      status: 400,
+      message: `first_name cannot be empty or missing`
+    })
+  }
+
+  if(!lastName){
+    return next({
+      status: 400,
+      message: `last_name cannot be empty or missing`
+    })
+  }
+
+  if(!mobileNumber){
+    return next({
+      status: 400,
+      message: `mobile_number cannot be empty or missing`
+    })
+  }
+
+  if(!reservationTime){
+    return next({
+      status: 400,
+      message: `reservation_time cannot be empty or missing`
+    })
+  }
+
+  return next()
+}
+
 async function reservationExists(req, res, next) {
   const { reservation_id } = req.params
 
@@ -150,6 +197,13 @@ async function list(req, res, next) {
     const data = await service.listDate(req.query.date)
     res.json({ data })
   }
+  if(req.query.mobile_number){
+    console.log(req.query.mobile_number)
+    const data = await service.listNumber(req.query.mobile_number)
+    res.json({ data })
+  }
+  const data = await service.list()
+  res.json({ data })
 }
 
 function create(req, res, next) {
@@ -159,8 +213,25 @@ function create(req, res, next) {
     .catch(next);
 }
 
+async function reservationStatus(req, res, next) {
+  console.log(res.locals.reservation)
+  return next()
+}
+
+async function updateReservation(req, res, next) {
+  const updatedReservation = {
+    ...res.locals.table,
+    ...req.body.data,
+    reservation_id: res.locals.reservation.reservation_id
+  }
+
+  const data = await service.update(updatedReservation)
+  res.status(200).json({ data })
+}
+
 module.exports = {
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   list: [asyncErrorBoundary(list)],
   create: [hasOnlyValidProperties, hasRequiredProperties, validateProperties, asyncErrorBoundary(create)],
+  update: [asyncErrorBoundary(reservationExists), validateProperties, validateUpdatedProperties, hasOnlyValidProperties, asyncErrorBoundary(updateReservation)]
 };

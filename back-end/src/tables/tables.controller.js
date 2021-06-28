@@ -120,10 +120,11 @@ async function update(req, res, next) {
     res.status(200).json({ data })
 }
 
-async function destroy(req, res, next) {
-    await service.destroy(res.locals.table.table_id)
+async function tableAvailable(req, res, next) {
+    await service.destroyAvailability(res.locals.table.table_id)
     res.sendStatus(200)
 }
+
 
 
 
@@ -132,5 +133,5 @@ module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasOnlyValidProperties, hasRequiredProperties, validateProperties, asyncErrorBoundary(create)],
     update: [asyncErrorBoundary(tableExists), validatePropertiesUpdate, asyncErrorBoundary(update)],
-    delete: [asyncErrorBoundary(tableExists), asyncErrorBoundary(tableOccupied), asyncErrorBoundary(destroy)],
+    delete: [asyncErrorBoundary(tableExists), asyncErrorBoundary(tableOccupied), asyncErrorBoundary(tableAvailable)],
 }

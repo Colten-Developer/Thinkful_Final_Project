@@ -22,9 +22,24 @@ function listDate(date) {
     .orderBy('reservation_time')
 }
 
+function listNumber(number) {
+  return knex('reservations')
+    .select('*')
+    .where('mobile_number', 'like', `%${number}%`)
+}
+
+function update(updatedReservation) {
+  return knex('reservations')
+    .select('*')
+    .where({ reservation_id: updatedReservation.reservation_id})
+    .update(updatedReservation, '*')
+}
+
 module.exports = {
     create,
     list,
     listDate,
     read,
+    listNumber,
+    update,
 }
