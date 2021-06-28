@@ -83,6 +83,14 @@ async function tableExists(req, res, next) {
     next({ status: 404, message: `Table id ${tableId} does not exist`})
   }
 
+async function tableOccupied(req, res, next) {
+    console.log(res.locals.table)
+    if(res.locals.table.reservation_id){
+        return next()
+    }
+    next({ status: 400, message: `The table is not occupied.`})
+}
+
 async function read(req, res, next) {
     const { table: data } = res.locals
     res.json({ data })
@@ -112,9 +120,17 @@ async function update(req, res, next) {
     res.status(200).json({ data })
 }
 
+async function destroy(req, res, next) {
+    await service.destroy(res.locals.table.table_id)
+    res.sendStatus(200)
+}
+
+
+
 module.exports = {
     read: [asyncErrorBoundary(tableExists), asyncErrorBoundary(read)],
     list: asyncErrorBoundary(list),
     create: [hasOnlyValidProperties, hasRequiredProperties, validateProperties, asyncErrorBoundary(create)],
     update: [asyncErrorBoundary(tableExists), validatePropertiesUpdate, asyncErrorBoundary(update)],
+    delete: [asyncErrorBoundary(tableExists), asyncErrorBoundary(tableOccupied), asyncErrorBoundary(destroy)],
 }
