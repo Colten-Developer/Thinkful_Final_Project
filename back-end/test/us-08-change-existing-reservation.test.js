@@ -58,12 +58,12 @@ describe("US-08 - Change an existing reservation", () => {
       Object.entries(expected).forEach(
         ([key, value]) => (reservation[key] = value)
       );
-
+        console.log(reservation, 'reservation')
       const response = await request(app)
         .put("/reservations/1")
         .set("Accept", "application/json")
         .send({ data: reservation });
-
+        console.log(response.body, 'res.body')
       expect(response.body.error).toBeUndefined();
       expect(response.body.data).toEqual(
         expect.objectContaining({

@@ -13,9 +13,12 @@ const VALID_PROPERTIES = [
   'reservation_date',
   'reservation_time',
   'people',
+  'status',
+  'created_at',
+  'updated_at'
 ]
 
-const hasRequiredProperties = hasProperties('first_name', 'last_name', 'mobile_number', 'reservation_date', 'reservation_time', 'people')
+const hasRequiredProperties = hasProperties('first_name', 'last_name', 'mobile_number', 'reservation_date', 'reservation_time', 'people', 'created_at', 'updated_at', 'status')
 
 function hasOnlyValidProperties(req, res, next) {
   const { data = {} } = req.body;
@@ -23,7 +26,7 @@ function hasOnlyValidProperties(req, res, next) {
   const invalidFields = Object.keys(data).filter(
     (field) => !VALID_PROPERTIES.includes(field)
   );
-
+    console.log('checking for only valid fields')
   if (invalidFields.length)
     return next({
       status: 400,
@@ -48,7 +51,6 @@ function validateProperties(req, res, next) {
       message: `reservation_time`
     })
   }
-
   let timeArray = time.split(':')
   let people = req.body.data.people
 
@@ -76,7 +78,7 @@ function validateProperties(req, res, next) {
     })
   }
   //if the date inputted is in the past
-  if(date < todayDateObject){
+  if(dateObject < new Date()){
     return next({
       status: 400,
       message: `future`
@@ -84,7 +86,7 @@ function validateProperties(req, res, next) {
   }
 
   //checks if reservations time is a time
-  if(timeArray.length != 2){
+  if(timeArray.length < 2){
     return next({
       status: 400,
       message: `reservation_time`
@@ -226,7 +228,8 @@ async function updateReservation(req, res, next) {
   }
 
   const data = await service.update(updatedReservation)
-  res.status(200).json({ data })
+  console.log(data)
+  res.status(200).json({ data: data[0] })
 }
 
 module.exports = {
