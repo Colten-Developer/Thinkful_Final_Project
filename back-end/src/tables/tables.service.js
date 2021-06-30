@@ -31,6 +31,13 @@ function update(updatedTable) {
         .update(updatedTable, '*')
   }
 
+  function updateReservation(updatedReservation) {
+      return knex('reservations')
+        .select('*')
+        .where({ reservation_id: updatedReservation.reservation_id})
+        .update(updatedReservation, '*')
+  }
+
 //might need to del(reservation_id) to delete the reservation instead of the entire table.
 function destroyAvailability(tableId) {
     return knex('tables')
@@ -45,4 +52,5 @@ module.exports = {
     update,
     readReservation,
     destroyAvailability,
+    updateReservation,
 }

@@ -58,6 +58,12 @@ async function validatePropertiesUpdate(req, res, next) {
     if(!reservation) {
         return next({ status: 404, message: `reservation ${req.body.data.reservation_id} does not exist`})
     }
+    //supposed to send 400 status code if table is already seated.
+    /*
+    if(reservation.status == 'seated'){
+        return next({ status: 400, message: `table already seated`})
+    }
+    */
 
     if(reservation.people > res.locals.table.capacity) {
         return next({ status: 400, message: `table does not have the capacity`})
@@ -84,7 +90,7 @@ async function tableExists(req, res, next) {
   }
 
 async function tableOccupied(req, res, next) {
-    console.log(res.locals.table)
+
     if(res.locals.table.reservation_id){
         return next()
     }
@@ -125,13 +131,25 @@ async function tableAvailable(req, res, next) {
     res.sendStatus(200)
 }
 
+async function reservationSeated(req, res, next) {
+    const reservation = await service.readReservation(req.body.data.reservation_id)
+    reservation.status = 'seated'
+    const data = await service.updateReservation(reservation)
+    return next()
+}
 
+async function reservationFinished(req, res, next) {
+    const reservation = await service.readReservation(res.locals.table.reservation_id)
+    reservation.status = 'finished'
+    await service.updateReservation(reservation)
+    return next()
+}
 
 
 module.exports = {
     read: [asyncErrorBoundary(tableExists), asyncErrorBoundary(read)],
     list: asyncErrorBoundary(list),
     create: [hasOnlyValidProperties, hasRequiredProperties, validateProperties, asyncErrorBoundary(create)],
-    update: [asyncErrorBoundary(tableExists), validatePropertiesUpdate, asyncErrorBoundary(update)],
-    delete: [asyncErrorBoundary(tableExists), asyncErrorBoundary(tableOccupied), asyncErrorBoundary(tableAvailable)],
+    update: [asyncErrorBoundary(tableExists), validatePropertiesUpdate, asyncErrorBoundary(reservationSeated), asyncErrorBoundary(update)],
+    delete: [asyncErrorBoundary(tableExists), asyncErrorBoundary(tableOccupied), asyncErrorBoundary(reservationFinished), asyncErrorBoundary(tableAvailable)],
 }
