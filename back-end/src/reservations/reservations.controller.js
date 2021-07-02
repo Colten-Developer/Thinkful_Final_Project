@@ -227,6 +227,9 @@ function create(req, res, next) {
 }
 
 async function reservationStatus(req, res, next) {
+  if(req.body.data.status == 'cancelled') {
+    return next()
+  }
   if(res.locals.reservation.status === 'finished'){
     return next({
       status: 400,
@@ -239,7 +242,7 @@ async function reservationStatus(req, res, next) {
     return next()
   } else if(req.body.data.status == 'finished'){
     return next()
-  } else {
+  }else {
     return next({
       status: 400,
       message: `reservation status is unknown`

@@ -58,13 +58,6 @@ async function validatePropertiesUpdate(req, res, next) {
     if(!reservation) {
         return next({ status: 404, message: `reservation ${req.body.data.reservation_id} does not exist`})
     }
-    //supposed to send 400 status code if table is already seated.
-    /*
-    if(reservation.status == 'seated'){
-        return next({ status: 400, message: `table already seated`})
-    }
-    */
-
     if(reservation.people > res.locals.table.capacity) {
         return next({ status: 400, message: `table does not have the capacity`})
     }
@@ -72,6 +65,9 @@ async function validatePropertiesUpdate(req, res, next) {
     if(res.locals.table.reservation_id != null) {
         return next({ status: 400, message: `occupied`})
 
+    }
+    if(reservation.status == 'seated'){
+        return next({ status: 400, message: `table already seated`})
     }
 
     return next()
