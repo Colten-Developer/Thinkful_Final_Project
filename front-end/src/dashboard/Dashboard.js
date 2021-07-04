@@ -14,6 +14,8 @@ function Dashboard({ date }) {
 
   useEffect(loadDashboard, [date]);
 
+  //listrescolten(urldata).then( (data) => setReservations(data))
+
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -22,6 +24,9 @@ function Dashboard({ date }) {
       .catch(setReservationsError);
     return () => abortController.abort();
   }
+  console.log('dashboard')
+  console.log(reservations)
+  console.log(reservationsError)
 
   return (
     <main>

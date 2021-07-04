@@ -38,6 +38,7 @@ async function fetchJson(url, options, onCancel) {
     }
 
     const payload = await response.json();
+    console.log(payload)
 
     if (payload.error) {
       return Promise.reject({ message: payload.error });
@@ -52,6 +53,8 @@ async function fetchJson(url, options, onCancel) {
   }
 }
 
+//export asycn fucntion listreverstionColtne
+
 /**
  * Retrieves all existing reservation.
  * @returns {Promise<[reservation]>}
@@ -63,11 +66,12 @@ export async function listReservations(params, signal) {
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  return await fetchJson(url, { headers, signal }, [])
+  console.log(url)
+  return await fetchJson(`${API_BASE_URL}/reservations`, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
-
+/*
 export async function CreateReservation(reservation, signal) {
   const url = `${API_BASE_URL}/reservations/new`
   const options = {
@@ -78,3 +82,4 @@ export async function CreateReservation(reservation, signal) {
   };
   return await fetchJson(url, options)
 }
+*/

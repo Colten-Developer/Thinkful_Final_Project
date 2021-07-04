@@ -197,14 +197,14 @@ async function read(req, res) {
 async function list(req, res, next) {
   if(req.query.date){
     const data = await service.listDate(req.query.date)
-    res.json({ data })
+    return res.json({ data })
   }
   if(req.query.mobile_number){
     const data = await service.listNumber(req.query.mobile_number)
-    res.json({ data })
+    return res.json({ data })
   }
   const data = await service.list()
-  res.json({ data })
+  return res.json({ data })
 }
 
 function create(req, res, next) {
