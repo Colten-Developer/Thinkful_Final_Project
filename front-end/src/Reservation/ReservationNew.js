@@ -1,9 +1,9 @@
 import React from 'react';
 import {useHistory} from "react-router-dom";
+import { createReservation } from "../utils/api";
 import { useState } from 'react';
 
 function CreateReservation() {
-
     const initialReservation = {
         first_name: '',
         last_name: '',
@@ -13,6 +13,8 @@ function CreateReservation() {
     }
 
     const [reservation, setReservation] = useState({ ...initialReservation })
+    const [reservationsError, setReservationsError] = useState([]);
+    let reserveError = ''
     const history = useHistory()
 
     function handleChange(event) {
@@ -26,13 +28,43 @@ function CreateReservation() {
         history.push('/')
       }
 
-
+      /*
     function formHandler(event) {
         event.preventDefault()
-        //CreateReservation(reservation)
+        createReservation(reservation)
         console.log(reservation)
         setReservation({ ...initialReservation })
         goHome()
+    }
+    */
+
+    async function formHandler(event) {
+        event.preventDefault()
+        await createReservation(reservation)
+            .then((response) => {
+                console.log('inside the then', response)
+                setReservation({ ...initialReservation })
+                goHome()
+            })
+            .catch((error) => {
+                console.log('inside the catch', error)
+                setReservationsError(error)
+                reserveError = error
+                //window.location.reload(false)
+                
+            })
+        /*
+        console.log(reservation)
+        console.log(reservationsError)
+        setReservation({ ...initialReservation })
+        if(!reservationsError) {
+            console.log('there is not an error')
+            //goHome()
+        }
+        */
+       console.log(reservationsError)
+       console.log(reserveError)
+       setReservationsError(reserveError)
     }
     
     return (
@@ -107,12 +139,29 @@ function CreateReservation() {
                       onChange={handleChange}
                       />
             </form>
+            <form>
+                <label htmlFor="reservation_time">
+                    People
+                </label>
+                <br />
+                    <input
+                      id="people"
+                      type="text"
+                      name="people"
+                      value={reservation.people}
+                      placeholder='Number of people'
+                      onChange={handleChange}
+                      />
+            </form>
             <button onClick={goHome}>
                 Cancel
             </button>
             <button onClick={formHandler}>
                 Submit
             </button>
+            <div style={reservationsError.message ? {opacity: 100} : {opacity: 0}}>
+            <h4>{`There is an error: ${reservationsError.message}`}</h4>
+            </div>
         </div>
     )
 }

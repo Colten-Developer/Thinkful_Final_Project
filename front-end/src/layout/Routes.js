@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import Reservation from "../Reservation/ReservationNew"
 import NotFound from "./NotFound";
-import { today } from "../utils/date-time";
+import { today, previous, next } from "../utils/date-time";
 
 /**
  * Defines all the routes for the application.
@@ -14,6 +14,45 @@ import { today } from "../utils/date-time";
  * @returns {JSX.Element}
  */
 function Routes() {
+  const [activeDate, setActiveDate] = useState(today());
+
+  const todaysDate = today()
+  const previousDate = previous(activeDate)
+  const nextDate = next(activeDate)
+
+  const history = useHistory()
+
+  async function reloadWithTodaysDate() {
+    console.log('reload todays date')
+    console.log(todaysDate)
+    await setActiveDate(todaysDate)
+    history.push({
+      pathname: '/dashboard',
+      search: `?date=${todaysDate}`
+    })
+  }
+
+  async function reloadWithPreviousDate() {
+    console.log('reload previous date')
+    console.log(previousDate)
+    await setActiveDate(previousDate)
+    history.push({
+      pathname: '/dashboard',
+      search: `?date=${previousDate}`
+    })
+  }
+
+  async function reloadWithNextDate() {
+    console.log('reload Next date')
+    console.log(nextDate)
+    await setActiveDate(nextDate)
+    history.push({
+      pathname: '/dashboard',
+      search: `?date=${nextDate}`
+    })
+  }
+
+
   return (
     <Switch>
       <Route exact={true} path="/">
@@ -23,7 +62,7 @@ function Routes() {
         <Reservation />
       </Route>
       <Route path="/dashboard">
-        <Dashboard date={today()} />
+        <Dashboard date={activeDate} reloadWithTodaysDate={reloadWithTodaysDate} reloadWithNextDate={reloadWithNextDate} reloadWithPreviousDate={reloadWithPreviousDate} />
       </Route>
       <Route>
         <NotFound />

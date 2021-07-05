@@ -29,6 +29,8 @@ headers.append("Content-Type", "application/json");
  *  a promise that resolves to the `json` data or an error.
  *  If the response is not in the 200 - 399 range the promise is rejected.
  */
+//thinkful provided fetchJson
+
 async function fetchJson(url, options, onCancel) {
   try {
     const response = await fetch(url, options);
@@ -38,7 +40,6 @@ async function fetchJson(url, options, onCancel) {
     }
 
     const payload = await response.json();
-    console.log(payload)
 
     if (payload.error) {
       return Promise.reject({ message: payload.error });
@@ -46,21 +47,22 @@ async function fetchJson(url, options, onCancel) {
     return payload.data;
   } catch (error) {
     if (error.name !== "AbortError") {
-      console.error(error.stack);
       throw error;
     }
     return Promise.resolve(onCancel);
   }
 }
 
-//export asycn fucntion listreverstionColtne
+
+
 
 /**
  * Retrieves all existing reservation.
  * @returns {Promise<[reservation]>}
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
-
+//thinkful provided list reservations
+/*
 export async function listReservations(params, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
@@ -71,15 +73,50 @@ export async function listReservations(params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+*/
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//export asycn fucntion listreverstionColtne
 /*
-export async function CreateReservation(reservation, signal) {
-  const url = `${API_BASE_URL}/reservations/new`
+async function fetchJson(url, options) {
+  try {
+    const response = await fetch(url, options);
+    if (response.status < 200 || response.status > 399) {
+      throw new Error(`${response.status} - ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      throw error;
+    }
+  }
+}
+*/
+
+
+export async function listReservations(signal) {
+  const url = `${API_BASE_URL}/reservations`;
+  return await fetchJson(url, { headers, signal }, [])
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+}
+
+export async function listReservationsByDate(params, signal) {
+  const url = `${API_BASE_URL}/reservations?date=${params}`
+  return await fetchJson(url, { headers, signal }, [])
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+}
+
+export async function createReservation(reservation, signal) {
+  let formatReservation = {data: reservation}
+  const url = `${API_BASE_URL}/reservations`
   const options = {
     method: 'POST',
     headers,
-    body: JSON.stringify(reservation),
+    body: JSON.stringify(formatReservation),
     signal,
   };
   return await fetchJson(url, options)
 }
-*/

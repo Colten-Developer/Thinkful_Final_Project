@@ -52,7 +52,7 @@ function validateProperties(req, res, next) {
     })
   }
   let timeArray = time.split(':')
-  let people = req.body.data.people
+  let people = Number(req.body.data.people)
 
   //the reservation date is a date
   if(!isDate(date)){
@@ -133,6 +133,8 @@ function validateProperties(req, res, next) {
       })
     }
   }
+
+  
   //if every type is valid continue down the list
   next()
 }
@@ -274,7 +276,10 @@ async function updateStatus(req, res, next) {
 module.exports = {
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   list: [asyncErrorBoundary(list)],
-  create: [hasOnlyValidProperties, hasRequiredProperties, validateProperties, asyncErrorBoundary(create)],
+  create: [hasOnlyValidProperties,
+     hasRequiredProperties,
+     validateProperties,
+     asyncErrorBoundary(create)],
   update: [asyncErrorBoundary(reservationExists),
      validateProperties, 
      validateUpdatedProperties, 
