@@ -159,7 +159,10 @@ function CreateReservation() {
             <button onClick={formHandler}>
                 Submit
             </button>
-            <div style={reservationsError.message ? {opacity: 100} : {opacity: 0}}>
+            <div 
+            style={reservationsError.message ? {opacity: 100} : {opacity: 0}}
+            className='alert alert-danger'
+            >
             <h4>{`There is an error: ${reservationsError.message}`}</h4>
             </div>
         </div>
