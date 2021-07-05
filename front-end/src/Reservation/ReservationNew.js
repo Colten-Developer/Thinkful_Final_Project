@@ -42,28 +42,15 @@ function CreateReservation() {
         event.preventDefault()
         await createReservation(reservation)
             .then((response) => {
-                console.log('inside the then', response)
                 setReservation({ ...initialReservation })
                 goHome()
             })
             .catch((error) => {
-                console.log('inside the catch', error)
                 setReservationsError(error)
                 reserveError = error
                 //window.location.reload(false)
                 
             })
-        /*
-        console.log(reservation)
-        console.log(reservationsError)
-        setReservation({ ...initialReservation })
-        if(!reservationsError) {
-            console.log('there is not an error')
-            //goHome()
-        }
-        */
-       console.log(reservationsError)
-       console.log(reserveError)
        setReservationsError(reserveError)
     }
     

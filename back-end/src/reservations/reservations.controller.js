@@ -81,7 +81,7 @@ function validateProperties(req, res, next) {
   if(dateObject < new Date()){
     return next({
       status: 400,
-      message: `future`
+      message: `the reservation must be in the future`
     })
   }
 
@@ -89,7 +89,7 @@ function validateProperties(req, res, next) {
   if(timeArray.length < 2){
     return next({
       status: 400,
-      message: `reservation_time`
+      message: `reservation_time must be a time`
     })
   }
 
@@ -97,7 +97,7 @@ function validateProperties(req, res, next) {
   if(typeof people != 'number' || people === 0){
     return next({
       status: 400,
-      message: `people`
+      message: `people must be a number greater than 0`
     })
   }
 
@@ -108,13 +108,13 @@ function validateProperties(req, res, next) {
     if(hours == 10 && minutes < 30){
       return next({
         status: 400,
-        message: `too early`
+        message: `the reservation is too early`
       })
     }
     if(hours < 10){
       return next({
         status: 400,
-        message: `too early`
+        message: `the reservation is too early`
       })
     }
   }
@@ -123,13 +123,13 @@ function validateProperties(req, res, next) {
     if(hours == 21 && minutes > 30){
       return next({
         status: 400,
-        message: `too late`
+        message: `the reservation is too late`
       })
     }
     if(hours > 21) {
       return next({
         status: 400,
-        message: `too late`
+        message: `the reservation is too late`
       })
     }
   }
