@@ -120,3 +120,20 @@ export async function createReservation(reservation, signal) {
   };
   return await fetchJson(url, options)
 }
+
+export async function listTables(signal) {
+  const url = `${API_BASE_URL}/tables`;
+  return await fetchJson(url, { headers, signal }, [])
+}
+
+export async function createTable(table, signal) {
+  let formatTable = {data: table}
+  const url = `${API_BASE_URL}/tables`
+  const options = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(formatTable),
+    signal,
+  };
+  return await fetchJson(url, options)
+}

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import Reservation from "../Reservation/ReservationNew"
+import Tables from '../Tables/TablesNew'
 import NotFound from "./NotFound";
 import { today, previous, next } from "../utils/date-time";
 
@@ -60,6 +61,9 @@ function Routes() {
       </Route>
       <Route exact={true} path="/reservations/new">
         <Reservation />
+      </Route>
+      <Route path="/tables/new">
+        <Tables />
       </Route>
       <Route path="/dashboard">
         <Dashboard date={activeDate} reloadWithTodaysDate={reloadWithTodaysDate} reloadWithNextDate={reloadWithNextDate} reloadWithPreviousDate={reloadWithPreviousDate} />

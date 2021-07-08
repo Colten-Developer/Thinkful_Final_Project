@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listReservationsByDate } from "../utils/api";
-import { today, previous, next } from "../utils/date-time";
-import { Link, useHistory } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
+import { listReservationsByDate } from "../utils/api";
+//import ErrorAlert from "../layout/ErrorAlert";
 
 /**
  * Defines the dashboard page.
@@ -12,10 +10,6 @@ import ErrorAlert from "../layout/ErrorAlert";
  */
 function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadWithNextDate}) {
   const [reservations, setReservations] = useState([]);
-  const [allReservations, setAllReservations] = useState([])
-  const [reservationsError, setReservationsError] = useState(null);
-  const history = useHistory()
-  console.log(date)
   
   //useEffect(loadDashboard, [date]);
   useEffect(() => {
@@ -23,39 +17,11 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
       .then((response) => setReservations(response));
   }, [date]);
 
-  useEffect(() => {
-    listReservations()
-      .then((response) => setAllReservations(response));
-  }, [date]);
-
-  function reloadPage() {
-    window.location.reload(false)
-  }
-
-  //listrescolten(urldata).then( (data) => setReservations(data))
-  /*
-
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    return () => abortController.abort();
-  }
-  */
-  /*
-  console.log('dashboard')
-  console.log(reservations)
-  console.log(allReservations)
-  console.log(reservationsError)
-  */
-  
-
   const reservationItem = reservations.map((reservation) => (
     <div>
       <div>
-        <h2>{`${reservation.last_name}, ${reservation.first_name}`}</h2>
+        <h4>{`${reservation.last_name}, ${reservation.first_name}`}</h4>
+        <p>Mobile Number, People, Date, Time</p>
         <p>{`${reservation.mobile_number}, ${reservation.people}, ${reservation.reservation_date}, ${reservation.reservation_time}`}</p>
         <button
           onClick={() => console.log(reservation.reservation_id)}
@@ -67,39 +33,48 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
     </div>
     
   ))
-  //console.log(reservationItem)
+    
   return (
     <main>
       <h1>Dashboard</h1>
-      <h4>{`Reservations for ${date}`}</h4>
-      <button
-          onClick={() => reloadWithPreviousDate()}
-          >Previous</button>
-      <button
-          onClick={() => reloadWithTodaysDate() }
-          >Today</button>
-      <button
-          onClick={() => reloadWithNextDate()}
-          >Next</button>
-      <br />
-      <h3>Last Name, First Name</h3>
-      {reservationItem}
-      <br />
+      <div>
+        <div class="row">
+          <div class="col-md-6">
+            <h3>{`Reservations for ${date}`}</h3>
+            <button
+                onClick={() => reloadWithPreviousDate()}
+                >Previous</button>
+            <button
+                onClick={() => reloadWithTodaysDate() }
+                >Today</button>
+            <button
+                onClick={() => reloadWithNextDate()}
+                >Next</button>
+            <br />
+            <h3>Last Name, First Name</h3>
+            {reservationItem}
+            <br />
+          </div>
+          <br />
+          <div class="col-md-6">
+            <h3>{`Tables stuff`}</h3>
+          </div>
+        </div>
+      </div>
     </main>
   )
-    /*
-  return (
-    <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
-        {reservationItem}
-        <br />
-      </div>
-      <ErrorAlert error={reservationsError} />
-    </main>
-  );
-  */
+  
+ /*
+ return (
+   <main>
+     <div className="row mb-5">div 1
+        <div className= 'col mb-5'>div 2</div>
+        <div className= 'col mb-5'>div 4</div>
+        <div className= 'col mb-5'>div 6</div>
+     </div>
+   </main>
+ )
+ */
 }
 
 export default Dashboard;
