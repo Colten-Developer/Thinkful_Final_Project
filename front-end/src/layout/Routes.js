@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
-import Reservation from "../Reservation/ReservationNew"
+import CreateReservation from "../Reservation/ReservationNew"
+import SeatReservation from "../Reservation/ReservationSeat";
 import Tables from '../Tables/TablesNew'
 import NotFound from "./NotFound";
 import { today, previous, next } from "../utils/date-time";
@@ -60,7 +61,10 @@ function Routes() {
         <Redirect to={"/dashboard"} />
       </Route>
       <Route exact={true} path="/reservations/new">
-        <Reservation />
+        <CreateReservation />
+      </Route>
+      <Route exact={true} path="/reservations/:reservation_id/seat">
+        <SeatReservation />
       </Route>
       <Route path="/tables/new">
         <Tables />

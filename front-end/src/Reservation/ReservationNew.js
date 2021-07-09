@@ -40,6 +40,7 @@ function CreateReservation() {
 
     async function formHandler(event) {
         event.preventDefault()
+        console.log(reservation)
         await createReservation(reservation)
             .then((response) => {
                 setReservation({ ...initialReservation })

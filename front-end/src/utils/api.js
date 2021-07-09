@@ -102,6 +102,11 @@ export async function listReservations(signal) {
     .then(formatReservationTime);
 }
 
+export async function readReservation(reservation_id, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation_id}`
+  return await fetchJson(url, {signal})
+}
+
 export async function listReservationsByDate(params, signal) {
   const url = `${API_BASE_URL}/reservations?date=${params}`
   return await fetchJson(url, { headers, signal }, [])
@@ -136,4 +141,28 @@ export async function createTable(table, signal) {
     signal,
   };
   return await fetchJson(url, options)
+}
+
+export async function updateTableOccupation(table, reservation_id, signal) {
+  table.reservation_id = reservation_id
+
+  let data = {data: {reservation_id: reservation_id}}
+  const url = `${API_BASE_URL}/tables/${table.table_id}/seat`
+  const options = {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(data),
+    signal,
+  }
+  return await fetchJson(url, options)
+  /*
+  const options = {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(table),
+    signal,
+  }
+  */
+
+  //return await fetchJson(url, options)
 }

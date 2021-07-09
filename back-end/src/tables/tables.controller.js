@@ -46,7 +46,6 @@ function validateProperties(req, res, next) {
 }
 
 async function validatePropertiesUpdate(req, res, next) {
-
     if(!req.body.data){
         return next({ status: 400, message: `data is missing`})
     }
@@ -59,7 +58,7 @@ async function validatePropertiesUpdate(req, res, next) {
         return next({ status: 404, message: `reservation ${req.body.data.reservation_id} does not exist`})
     }
     if(reservation.people > res.locals.table.capacity) {
-        return next({ status: 400, message: `table does not have the capacity`})
+        return next({ status: 400, message: `table does not have the capacity to hold this reservation`})
     }
 
     if(res.locals.table.reservation_id != null) {
