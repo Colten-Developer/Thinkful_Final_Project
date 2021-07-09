@@ -128,6 +128,11 @@ async function tableAvailable(req, res, next) {
 
 async function reservationSeated(req, res, next) {
     const reservation = await service.readReservation(req.body.data.reservation_id)
+
+    if(!reservation.status) {
+        return next()
+    }
+
     reservation.status = 'seated'
     const data = await service.updateReservation(reservation)
     return next()

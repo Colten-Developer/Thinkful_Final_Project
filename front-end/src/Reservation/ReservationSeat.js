@@ -1,5 +1,5 @@
 import React from 'react';
-import {useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import { listTables, readReservation, updateTableOccupation } from "../utils/api";
 import { useState, useEffect } from 'react';
 
@@ -9,6 +9,7 @@ function SeatReservation() {
     const { reservation_id } = useParams()
     const [selectedTable, setSelectedTable] = useState([])
     const [seatingError, setSeatingError] = useState([])
+    const history = useHistory()
 
     useEffect(() => {
         listTables()
@@ -43,6 +44,14 @@ function SeatReservation() {
           setSelectedTable(event.target.value)
       }
 
+      function goHome() {
+          history.push('/')
+      }
+
+      function goBack() {
+        history.goBack()
+    }
+
       function formHandler(event) {
           event.preventDefault()
           let tempTable = tables.find((table) => {
@@ -52,6 +61,7 @@ function SeatReservation() {
           })
           updateTableOccupation(tempTable, reservation_id)
           .then((response) => {
+              goHome()
         })
         .catch((error) => {
             setSeatingError(error)
@@ -82,6 +92,9 @@ function SeatReservation() {
                         {tableList}
                         <button type='submit'>
                             Submit
+                        </button>
+                        <button onClick={() => goBack()}>
+                            Cancel
                         </button>
                     </form>
                 </div>

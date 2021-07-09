@@ -35,8 +35,6 @@ function Routes() {
   }
 
   async function reloadWithPreviousDate() {
-    console.log('reload previous date')
-    console.log(previousDate)
     await setActiveDate(previousDate)
     history.push({
       pathname: '/dashboard',
@@ -45,8 +43,6 @@ function Routes() {
   }
 
   async function reloadWithNextDate() {
-    console.log('reload Next date')
-    console.log(nextDate)
     await setActiveDate(nextDate)
     history.push({
       pathname: '/dashboard',

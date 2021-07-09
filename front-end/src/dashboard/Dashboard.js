@@ -14,7 +14,6 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
   const [tables, setTables] = useState([])
   const history = useHistory()
   
-  //useEffect(loadDashboard, [date]);
   useEffect(() => {
     listReservationsByDate(date)
       .then((response) => setReservations(response));
@@ -24,6 +23,10 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
     listTables()
       .then((response) => setTables(response))
   }, [])
+
+  function freeTable() {
+    console.log('free Table')
+  }
 
   async function seatTheTable(reservation_id) {
     history.push(`/reservations/${reservation_id}/seat`)
@@ -71,6 +74,14 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
         <h4>
           {`${tableStatus}`}
         </h4>
+        </div>
+        <div 
+        class="col-md-2"
+        style={tableStatus == 'Occupied' ? {opacity: 100} : {opacity: 0}}
+        >
+          <button onClick={() => freeTable()}>
+            Finish Table
+          </button>
         </div>
       </div>
     )
