@@ -23,7 +23,6 @@ function CreateReservation() {
             ...reservation,
             [event.target.name]: event.target.value,
         })
-        console.log(reservation)
     }
 
     function goHome() {

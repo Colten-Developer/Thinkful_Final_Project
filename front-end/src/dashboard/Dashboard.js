@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservationsByDate, listTables, freeTable, updateReservation } from "../utils/api";
+import { listReservationsByDate, listTables, freeTable, updateReservation, updateReservationStatus } from "../utils/api";
 import {useHistory} from "react-router-dom";
 //import ErrorAlert from "../layout/ErrorAlert";
 
@@ -48,10 +48,10 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
 
   function cancelReservationHandler(reservation) {
     //todo make cancel reservations work
-    /*
+    
     if (window.confirm('Cancel this reservation?')) {
       reservation.status = 'cancelled'
-      updateReservation(reservation)
+      updateReservationStatus(reservation)
         .then((response) => {
           reservations.find((reservation) => {
             if(reservation.reservation_id == response.reservation_id){
@@ -60,9 +60,9 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
           })
         })
         setReservations(reservations)
-        window.location.reload(false)
+        window.location.reload(false);
     }
-    */
+    
   }
 
 

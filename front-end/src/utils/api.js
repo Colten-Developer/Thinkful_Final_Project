@@ -126,7 +126,6 @@ export async function createReservation(reservation, signal) {
     body: JSON.stringify(formatReservation),
     signal,
   };
-  console.log(formatReservation)
   return await fetchJson(url, options)
 }
 
@@ -167,15 +166,30 @@ export async function freeTable(tableId, signal) {
   return await fetchJson(url, options);
 }
 
-export async function updateReservation(updatedReservation, signal) {
+export async function updateReservationStatus(updatedReservation, signal) {
   let reservation_id = updatedReservation.reservation_id
   updatedReservation.status = 'cancelled'
-  const url = `${API_BASE_URL}/reservation/${reservation_id}/seat`;
-  let data = {data: {reservation_id: reservation_id}}
+
+  const url = `${API_BASE_URL}/reservations/${reservation_id}/status`;
+  let data = {data: {status: 'cancelled'}}
   const options = {
     method: 'PUT',
     headers,
-    body: JSON.stringify(updatedReservation),
+    body: JSON.stringify(data),
+    signal,
+  }
+  return await fetchJson(url, options)
+}
+
+export async function updateReservation(updatedReservation, signal){
+  let reservation_id = updatedReservation.reservation_id
+  console.log(updatedReservation)
+  let data = {data: updatedReservation}
+  const url = `${API_BASE_URL}/reservations/${reservation_id}`;
+  const options = {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(data),
     signal,
   }
   return await fetchJson(url, options)

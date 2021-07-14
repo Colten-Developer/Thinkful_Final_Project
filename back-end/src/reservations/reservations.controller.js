@@ -38,6 +38,7 @@ function hasOnlyValidProperties(req, res, next) {
 //validates that properties are appropriate types
 function validateProperties(req, res, next) {
 
+  console.log(req.body, 'req.body.data validateProperties')
   let date = req.body.data.reservation_date
   //function to see if the value is a date
   const isDate = (value) => {
@@ -144,9 +145,6 @@ function validateUpdatedProperties(req, res, next) {
   let mobileNumber = req.body.data.mobile_number
   let reservationTime = req.body.data.reservation_time
 
- //console.log(res.locals.reservation.first_name, 'long first')
-  //console.log(firstName, 'first name')
-
   if(!firstName){
     return next({
       status: 400,
@@ -184,6 +182,7 @@ async function reservationExists(req, res, next) {
   const reservation = await service.read(reservation_id)
   
   if (reservation){
+    console.log(reservation, 'reservation, reservation.controller')
       res.locals.reservation = reservation
       return next()
   }

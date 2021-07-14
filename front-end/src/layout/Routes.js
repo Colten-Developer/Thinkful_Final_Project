@@ -27,8 +27,6 @@ function Routes() {
   const history = useHistory()
 
   async function reloadWithTodaysDate() {
-    console.log('reload todays date')
-    console.log(todaysDate)
     await setActiveDate(todaysDate)
     history.push({
       pathname: '/dashboard',
