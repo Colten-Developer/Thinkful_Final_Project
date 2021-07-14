@@ -122,16 +122,14 @@ async function update(req, res, next) {
 }
 
 async function tableAvailable(req, res, next) {
-    await service.destroyAvailability(res.locals.table.table_id)
-    res.sendStatus(200)
+    const data = await service.destroyAvailability(res.locals.table.table_id)
+    data[0].reservation_id = null
+    const updatedTable = await service.update(data[0])
+    res.status(200).json({ data: data[0] })
 }
 
 async function reservationSeated(req, res, next) {
     const reservation = await service.readReservation(req.body.data.reservation_id)
-
-    if(!reservation.status) {
-        return next()
-    }
 
     reservation.status = 'seated'
     const data = await service.updateReservation(reservation)
@@ -140,6 +138,7 @@ async function reservationSeated(req, res, next) {
 
 async function reservationFinished(req, res, next) {
     const reservation = await service.readReservation(res.locals.table.reservation_id)
+    
     reservation.status = 'finished'
     await service.updateReservation(reservation)
     return next()

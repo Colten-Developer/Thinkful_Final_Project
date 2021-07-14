@@ -9,7 +9,8 @@ function CreateReservation() {
         last_name: '',
         mobile_number: '',
         reservation_date: '',
-        reservation_time:''
+        reservation_time:'',
+        people: ''
     }
 
     const [reservation, setReservation] = useState({ ...initialReservation })
@@ -22,25 +23,15 @@ function CreateReservation() {
             ...reservation,
             [event.target.name]: event.target.value,
         })
+        console.log(reservation)
     }
 
     function goHome() {
         history.push('/')
       }
 
-      /*
-    function formHandler(event) {
-        event.preventDefault()
-        createReservation(reservation)
-        console.log(reservation)
-        setReservation({ ...initialReservation })
-        goHome()
-    }
-    */
-
     async function formHandler(event) {
         event.preventDefault()
-        console.log(reservation)
         await createReservation(reservation)
             .then((response) => {
                 setReservation({ ...initialReservation })

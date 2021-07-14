@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservationsByDate, listTables } from "../utils/api";
+import { listReservationsByDate, listTables, freeTable, updateReservation } from "../utils/api";
 import {useHistory} from "react-router-dom";
 //import ErrorAlert from "../layout/ErrorAlert";
 
@@ -24,28 +24,66 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
       .then((response) => setTables(response))
   }, [])
 
-  function freeTable() {
-    console.log('free Table')
-  }
-
   async function seatTheTable(reservation_id) {
     history.push(`/reservations/${reservation_id}/seat`)
   }
+
+  function finishTableHandler(tableId) {
+    if (window.confirm('Finish this table?')) {
+      freeTable(tableId).then((response) => {
+        tables.find((table) => {
+          if(table.table_id == response.table_id){
+            let returnedObject = Object.assign(table, response)
+          }
+        })
+      })
+      setTables(tables)
+      window.location.reload(false);
+    }
+  }
+
+  function editPage(reservation_id) {
+    history.push(`/reservations/${reservation_id}/edit`)
+  }
+
+  function cancelReservationHandler(reservation) {
+    //todo make cancel reservations work
+    /*
+    if (window.confirm('Cancel this reservation?')) {
+      reservation.status = 'cancelled'
+      updateReservation(reservation)
+        .then((response) => {
+          reservations.find((reservation) => {
+            if(reservation.reservation_id == response.reservation_id){
+              let returnedObject = Object.assign(reservation, response)
+            }
+          })
+        })
+        setReservations(reservations)
+        window.location.reload(false)
+    }
+    */
+  }
+
 
   const reservationItem = reservations.map((reservation) => (
     <div>
       <div>
         <h4>{`${reservation.last_name}, ${reservation.first_name}`}</h4>
+        <h5>{`Status: ${reservation.status}`}</h5>
         <p>Mobile Number, People, Date, Time</p>
         <p>{`${reservation.mobile_number}, ${reservation.people}, ${reservation.reservation_date}, ${reservation.reservation_time}`}</p>
         <button
-          onClick={() => console.log(reservation.reservation_id)}
-          >View</button>
-        <button
-          onClick={() => console.log(reservation.reservation_id)}
-          >Delete</button>
+          onClick={() => editPage(reservation.reservation_id)}
+          style={reservation.status == 'booked' ? {opacity: 100} : {opacity: 0}}
+          >Edit</button>
+          <button
+          onClick={() => cancelReservationHandler(reservation)}
+          data-reservation-id-cancel={reservation.reservation_id}
+          >Cancel</button>
           <button
           onClick={() => seatTheTable(reservation.reservation_id)}
+          style={reservation.status == 'booked' ? {opacity: 100} : {opacity: 0}}
           >Seat</button>
       </div>
     </div>
@@ -78,8 +116,9 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
         <div 
         class="col-md-2"
         style={tableStatus == 'Occupied' ? {opacity: 100} : {opacity: 0}}
+        data-table-id-finish={table.table_id}
         >
-          <button onClick={() => freeTable()}>
+          <button onClick={() => finishTableHandler(table.table_id)}>
             Finish Table
           </button>
         </div>

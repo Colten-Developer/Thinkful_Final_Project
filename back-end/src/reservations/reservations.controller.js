@@ -52,7 +52,7 @@ function validateProperties(req, res, next) {
     })
   }
   let timeArray = time.split(':')
-  let people = Number(req.body.data.people)
+  let people = req.body.data.people
 
   //the reservation date is a date
   if(!isDate(date)){
@@ -92,7 +92,6 @@ function validateProperties(req, res, next) {
       message: `reservation_time must be a time`
     })
   }
-
   //checks if people is a number
   if(typeof people != 'number' || people === 0){
     return next({

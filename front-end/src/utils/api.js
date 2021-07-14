@@ -61,6 +61,7 @@ async function fetchJson(url, options, onCancel) {
  * @returns {Promise<[reservation]>}
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
+
 //thinkful provided list reservations
 /*
 export async function listReservations(params, signal) {
@@ -115,6 +116,8 @@ export async function listReservationsByDate(params, signal) {
 }
 
 export async function createReservation(reservation, signal) {
+  reservation.people = Number(reservation.people)
+  reservation.status = 'booked'
   let formatReservation = {data: reservation}
   const url = `${API_BASE_URL}/reservations`
   const options = {
@@ -123,6 +126,7 @@ export async function createReservation(reservation, signal) {
     body: JSON.stringify(formatReservation),
     signal,
   };
+  console.log(formatReservation)
   return await fetchJson(url, options)
 }
 
@@ -155,14 +159,24 @@ export async function updateTableOccupation(table, reservation_id, signal) {
     signal,
   }
   return await fetchJson(url, options)
-  /*
+}
+
+export async function freeTable(tableId, signal) {
+  const url = `${API_BASE_URL}/tables/${tableId}/seat`;
+  const options = { method: "DELETE", signal };
+  return await fetchJson(url, options);
+}
+
+export async function updateReservation(updatedReservation, signal) {
+  let reservation_id = updatedReservation.reservation_id
+  updatedReservation.status = 'cancelled'
+  const url = `${API_BASE_URL}/reservation/${reservation_id}/seat`;
+  let data = {data: {reservation_id: reservation_id}}
   const options = {
     method: 'PUT',
     headers,
-    body: JSON.stringify(table),
+    body: JSON.stringify(updatedReservation),
     signal,
   }
-  */
-
-  //return await fetchJson(url, options)
+  return await fetchJson(url, options)
 }
