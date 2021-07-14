@@ -32,8 +32,13 @@ function EditReservation() {
     const formHandler = (event) => {
         event.preventDefault()
         updateReservation(reservation)
-        setReservation({ ...initialReservation })
-        goHome()
+            .then((response) => {
+                setReservation({ ...initialReservation })
+                goHome()
+            })
+            .catch((error) => {
+
+            })
     }
 
     function goHome() {
