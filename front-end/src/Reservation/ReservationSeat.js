@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react';
 function SeatReservation() {
     const [tables, setTables] = useState([])
     const [reservation, setReservation] = useState([])
-    const { reservation_id } = useParams()
+    const {reservation_id} = useParams()
+    const [reservationId, setReservationId] = useState(reservation_id)
     const [selectedTable, setSelectedTable] = useState([])
     const [seatingError, setSeatingError] = useState([])
     const history = useHistory()
@@ -17,13 +18,13 @@ function SeatReservation() {
       }, [])
 
       useEffect(() => {
-        readReservation(Number(reservation_id))
+        readReservation(Number(reservationId))
           .then((response) => setReservation(response))
-      }, [])
+      }, [reservationId])
 
       const tableList = tables.map((table) => {
         return (
-          <div>
+          <div key={table.table_id}>
             <div>
                 <h4>
                     <input 
@@ -46,6 +47,7 @@ function SeatReservation() {
 
       function goHome() {
           history.push('/')
+          setReservationId(reservation_id)
       }
 
       function goBack() {
@@ -54,11 +56,7 @@ function SeatReservation() {
 
       function formHandler(event) {
           event.preventDefault()
-          let tempTable = tables.find((table) => {
-              if(selectedTable == table.table_id) {
-                  return table
-              }
-          })
+          let tempTable = tables.find((table) => Number(selectedTable) === table.table_id)
           updateTableOccupation(tempTable, reservation_id)
           .then((response) => {
               goHome()
@@ -78,7 +76,7 @@ function SeatReservation() {
             <h2>
                 Reservation
             </h2>
-            <div class = 'row'>
+            <div className = 'row'>
                 <div>
                     <h3>
                         Name, Phone Number,  Capacity

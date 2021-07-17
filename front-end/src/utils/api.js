@@ -183,7 +183,6 @@ export async function updateReservationStatus(updatedReservation, signal) {
 
 export async function updateReservation(updatedReservation, signal){
   let reservation_id = updatedReservation.reservation_id
-  console.log(updatedReservation)
   let data = {data: updatedReservation}
   const url = `${API_BASE_URL}/reservations/${reservation_id}`;
   const options = {

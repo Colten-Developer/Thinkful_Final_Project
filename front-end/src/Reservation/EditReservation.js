@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {useHistory, useParams} from "react-router-dom";
-import { createReservation, readReservation, updateReservation } from "../utils/api";
+import { readReservation, updateReservation } from "../utils/api";
 
 function EditReservation() {
     const initialReservation = {
@@ -12,15 +12,24 @@ function EditReservation() {
         people: ''
     }
 
-    const [reservations, setReservations] = useState([])
     const [reservation, setReservation] = useState({ ...initialReservation })
+    //const [reservationId, setReservationId] = useState()
     const {reservation_id} = useParams()
+    const [reservationId, setReservationId] = useState(reservation_id)
     const history = useHistory()
-
+    //setReservationId(reservation_id)
+    
+/*
     useEffect(() => {
         readReservation(reservation_id)
           .then((response) => setReservation(response));
-      }, []);
+      }, [reservation_id]);
+      */
+      useEffect(() => {
+        readReservation(reservationId)
+          .then((response) => setReservation(response));
+      }, [reservationId]);
+      
 
     function handleChange(event) {
         setReservation({
@@ -37,7 +46,7 @@ function EditReservation() {
                 goHome()
             })
             .catch((error) => {
-
+                setReservationId(reservation.reservation_id)
             })
     }
 

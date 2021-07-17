@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservationsByDate, listTables, freeTable, updateReservation, updateReservationStatus } from "../utils/api";
+import { listReservationsByDate, listTables, freeTable, updateReservationStatus } from "../utils/api";
 import {useHistory} from "react-router-dom";
 //import ErrorAlert from "../layout/ErrorAlert";
 
@@ -31,9 +31,9 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
   function finishTableHandler(tableId) {
     if (window.confirm('Finish this table?')) {
       freeTable(tableId).then((response) => {
-        tables.find((table) => {
-          if(table.table_id == response.table_id){
-            let returnedObject = Object.assign(table, response)
+        tables.forEach((table) => {
+          if(table.table_id === response.table_id){
+            Object.assign(table, response)
           }
         })
       })
@@ -53,9 +53,9 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
       reservation.status = 'cancelled'
       updateReservationStatus(reservation)
         .then((response) => {
-          reservations.find((reservation) => {
-            if(reservation.reservation_id == response.reservation_id){
-              let returnedObject = Object.assign(reservation, response)
+          reservations.forEach((reservation) => {
+            if(reservation.reservation_id === response.reservation_id){
+              Object.assign(reservation, response)
             }
           })
         })
@@ -67,7 +67,7 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
 
 
   const reservationItem = reservations.map((reservation) => (
-    <div>
+    <div key={reservation.reservation_id}>
       <div>
         <h4>{`${reservation.last_name}, ${reservation.first_name}`}</h4>
         <h5>{`Status: ${reservation.status}`}</h5>
@@ -75,7 +75,7 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
         <p>{`${reservation.mobile_number}, ${reservation.people}, ${reservation.reservation_date}, ${reservation.reservation_time}`}</p>
         <button
           onClick={() => editPage(reservation.reservation_id)}
-          style={reservation.status == 'booked' ? {opacity: 100} : {opacity: 0}}
+          style={reservation.status === 'booked' ? {opacity: 100} : {opacity: 0}}
           >Edit</button>
           <button
           onClick={() => cancelReservationHandler(reservation)}
@@ -83,7 +83,7 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
           >Cancel</button>
           <button
           onClick={() => seatTheTable(reservation.reservation_id)}
-          style={reservation.status == 'booked' ? {opacity: 100} : {opacity: 0}}
+          style={reservation.status === 'booked' ? {opacity: 100} : {opacity: 0}}
           >Seat</button>
       </div>
     </div>
@@ -97,25 +97,25 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
       tableStatus = 'Free'
     }
     return (
-      <div class = 'row'>
-        <div class="col-md-5" data-table-id-status={table.table_id}>
+      <div className = 'row' key={table.table_id}>
+        <div className="col-md-5" data-table-id-status={table.table_id}>
         <h4>
           {`${table.table_name}`}
         </h4>
         </div>
-        <div class="col-md-2">
+        <div className="col-md-2">
         <h4>
           {`${table.capacity}`}
         </h4>
         </div>
-        <div class="col-md-3">
+        <div className="col-md-3">
         <h4>
           {`${tableStatus}`}
         </h4>
         </div>
         <div 
-        class="col-md-2"
-        style={tableStatus == 'Occupied' ? {opacity: 100} : {opacity: 0}}
+        className="col-md-2"
+        style={tableStatus === 'Occupied' ? {opacity: 100} : {opacity: 0}}
         data-table-id-finish={table.table_id}
         >
           <button onClick={() => finishTableHandler(table.table_id)}>
@@ -130,8 +130,8 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
     <main>
       <h1>Dashboard</h1>
       <div>
-        <div class="row">
-          <div class="col-md-6">
+        <div className="row">
+          <div className="col-md-6">
             <h3>{`Reservations for ${date}`}</h3>
             <button
                 onClick={() => reloadWithPreviousDate()}
@@ -148,7 +148,7 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
             <br />
           </div>
           <br />
-          <div class="col-md-6">
+          <div className="col-md-6">
             <h3>{`Tables`}</h3>
             <h3>
               Table Name, Capacity, Status
