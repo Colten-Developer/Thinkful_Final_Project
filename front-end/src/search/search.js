@@ -14,8 +14,10 @@ function SearchNumber() {
     const history = useHistory()
 
     useEffect(() => {
+        const abortController = new AbortController()
         listReservations()
           .then((response) => setReservations(response));
+          return () => abortController.abort()
       }, []);
 
     function handleChange(event) {

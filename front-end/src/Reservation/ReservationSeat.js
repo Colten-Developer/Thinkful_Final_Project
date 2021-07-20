@@ -13,13 +13,17 @@ function SeatReservation() {
     const history = useHistory()
 
     useEffect(() => {
+        const abortController = new AbortController()
         listTables()
           .then((response) => setTables(response))
+          return () => abortController.abort()
       }, [])
 
       useEffect(() => {
+        const abortController = new AbortController()
         readReservation(Number(reservationId))
           .then((response) => setReservation(response))
+          return () => abortController.abort()
       }, [reservationId])
 
       const tableList = tables.map((table) => {

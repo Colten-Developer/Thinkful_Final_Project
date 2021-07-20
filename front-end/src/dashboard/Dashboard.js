@@ -15,13 +15,17 @@ function Dashboard({ date, reloadWithTodaysDate, reloadWithPreviousDate, reloadW
   const history = useHistory()
   
   useEffect(() => {
+    const abortController = new AbortController()
     listReservationsByDate(date)
       .then((response) => setReservations(response));
+      return () => abortController.abort()
   }, [date]);
 
   useEffect(() => {
+    const abortController = new AbortController()
     listTables()
       .then((response) => setTables(response))
+      return () => abortController.abort()
   }, [])
 
   async function seatTheTable(reservation_id) {
