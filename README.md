@@ -14,3 +14,10 @@ Installation
 5 Run "npm run start" from inside the front-end folder. 
     (if you see warnings in the console, stop the server "run npm run build" then restart the server)
 The application will automatically run on Localhost/5000 for the server and localhost/3000 for the UI
+
+URL information
+Client Side:
+https://thinkful-final-front-end.vercel.app/dashboard?date=2021-07-20
+
+Server Side:
+https://still-stream-64379.herokuapp.com/reservations
